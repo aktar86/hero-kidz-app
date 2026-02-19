@@ -17,12 +17,12 @@ const RootLayout = ({ children }) => {
     <html lang="en">
       <body className={`${poppins.className}`}>
         {/* header */}
-        <header>
+        <header className="max-w-11/12 mx-auto">
           <Navbar></Navbar>
         </header>
 
         {/* main  */}
-        <main> {children}</main>
+        <main className="max-w-11/12 mx-auto"> {children}</main>
 
         {/* footer */}
         <footer>

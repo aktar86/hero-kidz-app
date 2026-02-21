@@ -5,10 +5,13 @@ import React from "react";
 
 const NavLink = ({ href, children }) => {
   const path = usePathname();
+
+  const isActive = path === href;
+
   return (
     <Link
-      className={`${path.startsWith(href) && "text-primary"} font-medium`}
       href={href}
+      className={`${isActive ? "text-primary" : "text-gray-500"} font-medium transition-colors`}
     >
       {children}
     </Link>

@@ -1,10 +1,21 @@
 import { Poppins } from "next/font/google";
+import localFont from "next/font/local";
+import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
 
 const poppins = Poppins({
   weight: ["200", "400", "500", "600", "700"],
+});
+
+export const fontBangla = localFont({
+  src: "./../fonts/mayaboti-normal.ttf",
+  // weight: ["100", "200", "300", "500", "700", "900"],
+});
+
+export const hindSiliguri = Hind_Siliguri({
+  weight: ["300", "400", "500", "700"],
 });
 
 export const metadata = {
@@ -22,7 +33,10 @@ const RootLayout = ({ children }) => {
         </header>
 
         {/* main  */}
-        <main className="max-w-11/12 mx-auto"> {children}</main>
+        <main className="max-w-11/12 mx-auto min-h-[calc(100vh-286px)]">
+          {" "}
+          {children}
+        </main>
 
         {/* footer */}
         <footer>

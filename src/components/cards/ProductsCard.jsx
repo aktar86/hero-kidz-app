@@ -1,8 +1,8 @@
 import { hindSiliguri } from "@/app/layout";
-import { CloudSnow } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import CartButtons from "../buttons/CartButtons";
 
 const ProductsCard = ({ product }) => {
   const id = product._id;
@@ -70,9 +70,7 @@ const ProductsCard = ({ product }) => {
 
         {/* Action Button */}
         <div className="card-actions mt-4">
-          <button className="btn btn-primary btn-block btn-sm md:btn-md">
-            Add to Cart
-          </button>
+          <CartButtons product={product}></CartButtons>
           <Link href={`products/${id}`} className="w-full">
             <button className="btn btn-primary btn-outline btn-block btn-sm md:btn-md">
               view details

@@ -3,6 +3,7 @@ import { ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import React from "react";
+import CartButtons from "../buttons/CartButtons";
 
 const ProductDetailsCard = ({ product }) => {
   const router = useRouter();
@@ -93,9 +94,7 @@ const ProductDetailsCard = ({ product }) => {
           </div>
           {/* btn  */}
           <div>
-            <button className="btn btn-primary w-full rounded-full mt-5">
-              Add to Cart
-            </button>
+            <CartButtons product={product}></CartButtons>
           </div>
         </div>
       </div>

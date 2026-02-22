@@ -83,6 +83,7 @@ export const metadata = {
 
   category: "ecommerce",
 };
+
 const RootLayout = ({ children }) => {
   return (
     <html lang="en">

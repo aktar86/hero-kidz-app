@@ -8,6 +8,7 @@ const productCollection = dbConnect(collection.PRODUCTS);
 
 export const getProducts = async () => {
   const products = await productCollection.find().toArray();
+
   return products;
 };
 
@@ -20,5 +21,5 @@ export const getSingleProduct = async (id) => {
   const query = { _id: new ObjectId(id) };
 
   const product = await productCollection.findOne(query);
-  return product || {};
+  return { ...product, _id: product._id.toString() } || {};
 };

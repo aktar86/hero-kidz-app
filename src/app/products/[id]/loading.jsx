@@ -1,11 +1,8 @@
+import ProductDetailsSkeleton from "@/components/skeleton/ProductDetailsSkeleton";
 import React from "react";
 
 const loading = () => {
-  return (
-    <div>
-      <h1>Loading...</h1>
-    </div>
-  );
+  return <ProductDetailsSkeleton />;
 };
 
 export default loading;

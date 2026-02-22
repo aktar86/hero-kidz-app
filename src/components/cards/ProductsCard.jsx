@@ -1,4 +1,5 @@
 import { hindSiliguri } from "@/app/layout";
+import { CloudSnow } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
@@ -72,7 +73,7 @@ const ProductsCard = ({ product }) => {
           <button className="btn btn-primary btn-block btn-sm md:btn-md">
             Add to Cart
           </button>
-          <Link href={`products/${id}`}>
+          <Link href={`products/${id}`} className="w-full">
             <button className="btn btn-primary btn-outline btn-block btn-sm md:btn-md">
               view details
             </button>

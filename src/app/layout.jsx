@@ -4,6 +4,7 @@ import { Hind_Siliguri } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layouts/Navbar";
 import Footer from "@/components/layouts/Footer";
+import NextAuthProvider from "@/provider/NextAuthProvider";
 
 const poppins = Poppins({
   weight: ["200", "400", "500", "600", "700"],
@@ -86,25 +87,27 @@ export const metadata = {
 
 const RootLayout = ({ children }) => {
   return (
-    <html lang="en">
-      <body className={`${poppins.className}`}>
-        {/* header */}
-        <header className="max-w-11/12 mx-auto">
-          <Navbar></Navbar>
-        </header>
+    <NextAuthProvider>
+      <html lang="en">
+        <body className={`${poppins.className}`}>
+          {/* header */}
+          <header className="max-w-11/12 mx-auto">
+            <Navbar></Navbar>
+          </header>
 
-        {/* main  */}
-        <main className="max-w-11/12 mx-auto min-h-[calc(100vh-286px)]">
-          {" "}
-          {children}
-        </main>
+          {/* main  */}
+          <main className="max-w-11/12 mx-auto min-h-[calc(100vh-286px)]">
+            {" "}
+            {children}
+          </main>
 
-        {/* footer */}
-        <footer>
-          <Footer></Footer>
-        </footer>
-      </body>
-    </html>
+          {/* footer */}
+          <footer>
+            <Footer></Footer>
+          </footer>
+        </body>
+      </html>
+    </NextAuthProvider>
   );
 };
 export default RootLayout;

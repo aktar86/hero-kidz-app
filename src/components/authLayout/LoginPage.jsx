@@ -2,6 +2,7 @@
 import React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { signIn } from "next-auth/react";
 const LoginPage = () => {
   const router = useRouter();
 
@@ -16,12 +17,26 @@ const LoginPage = () => {
     setLoading(true);
 
     // 👉 replace with your API / next-auth
-    console.log({ email, password });
+    const form = {
+      email,
+      password,
+    };
+    console.log(form);
+    const result = await signIn("credentials", {
+      email: form.email,
+      password: form.password,
+      redirect: false,
+    });
 
-    setTimeout(() => {
-      setLoading(false);
-      router.push("/"); // redirect after login
-    }, 1000);
+    console.log(result);
+
+    if (result?.ok) {
+      router.push("/");
+    } else {
+      alert(result?.error || "Login Failed");
+    }
+
+    setLoading(false);
   };
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 p-4">

@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { postUser } from "@/action/server/auth";
+import SocialLogin from "./SocialLogin";
 
 const RegisterPage = () => {
   const router = useRouter();
@@ -90,6 +91,16 @@ const RegisterPage = () => {
             {loading ? "Creating..." : "Register"}
           </button>
         </form>
+
+        {/* or operatior  */}
+
+        <div className="mt-5 flex justify-center items-center gap-5">
+          <hr className="grow border border-gray-300" />
+          <p>or</p>
+          <hr className="grow border border-gray-300" />
+        </div>
+        {/* social login */}
+        <SocialLogin />
 
         {/* Login link */}
         <p className="text-center text-sm text-gray-600 mt-4">

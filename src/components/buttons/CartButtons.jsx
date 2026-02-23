@@ -5,19 +5,28 @@ import { usePathname, useRouter } from "next/navigation";
 
 const CartButtons = ({ product }) => {
   const router = useRouter();
-  const path = usePathname();
-  const session = useSession();
-  const isLogin = session.status === "authenticated";
-  const addToCart = () => {
-    if (isLogin) {
-      return alert(product._id);
-    } else {
-      router.push(`/login?callbackUrl=${path}`);
+  const pathname = usePathname();
+
+  // clean destructure
+  const { status } = useSession();
+
+  const handleAddToCart = () => {
+    // still checking session
+    if (status === "loading") return;
+
+    // not logged in → go login
+    if (status !== "authenticated") {
+      router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
+      return;
     }
+
+    //  logged in → add to cart logic
+    alert(product._id);
   };
+
   return (
     <button
-      onClick={addToCart}
+      onClick={handleAddToCart}
       className="btn btn-primary btn-block btn-sm md:btn-md"
     >
       Add to Cart

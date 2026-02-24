@@ -12,7 +12,7 @@ const SocialLogin = () => {
   const callbackUrl = searchParams.get("callback") || "/";
 
   const handleSocialLogin = async () => {
-    const result = await signIn("google", { callbackUrl });
+    const result = await signIn("google", { redirect: false, callbackUrl });
 
     if (result?.ok) {
       router.push(callbackUrl || "/");

@@ -128,7 +128,10 @@ const LoginPage = () => {
 
         <div className="mt-5 flex gap-2">
           <p>Don't have an account? </p>{" "}
-          <Link href={"/register"} className="text-blue-500">
+          <Link
+            href={`/register?callbackUrl=${callbackUrl}`}
+            className="text-blue-500"
+          >
             Register
           </Link>
         </div>

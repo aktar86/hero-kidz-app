@@ -1,11 +1,13 @@
 "use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { postUser } from "@/action/server/auth";
 import SocialLogin from "./SocialLogin";
 
 const RegisterPage = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const callBackUrl = searchParams.get("callbackUrl") || "/";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -27,7 +29,7 @@ const RegisterPage = () => {
       const result = await postUser(data);
       if (result.acknowledged) {
         alert("successfull. Please login");
-        // router.push("/login");
+        router.push(callBackUrl);
       }
     } catch (err) {
       console.log(err);

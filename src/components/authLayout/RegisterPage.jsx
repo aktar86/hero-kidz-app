@@ -8,7 +8,7 @@ import { signIn } from "next-auth/react";
 const RegisterPage = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const callbackUrl = searchParams.get("callbackUrl") || "/";
+  const callBackUrl = searchParams.get("callbackUrl") || "/";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -30,12 +30,7 @@ const RegisterPage = () => {
       const result = await postUser(data);
       if (result.acknowledged) {
         alert("successfull. Please login");
-        // router.push("/login");
-        const result = await signIn("credentials", {
-          email,
-          password,
-          callbackUrl,
-        });
+        router.push(callBackUrl);
       }
     } catch (err) {
       console.log(err);

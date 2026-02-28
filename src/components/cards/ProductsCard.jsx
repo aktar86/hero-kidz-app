@@ -5,7 +5,7 @@ import React from "react";
 import CartButtons from "../buttons/CartButtons";
 
 const ProductsCard = ({ product }) => {
-  const id = product._id;
+  const { _id } = product;
   const discountedPrice =
     product.price - (product.price * product.discount) / 100;
 
@@ -70,8 +70,10 @@ const ProductsCard = ({ product }) => {
 
         {/* Action Button */}
         <div className="card-actions mt-4">
-          <CartButtons product={product}></CartButtons>
-          <Link href={`products/${id}`} className="w-full">
+          <CartButtons
+            product={{ ...product, _id: _id.toString() }}
+          ></CartButtons>
+          <Link href={`products/${_id}`} className="w-full">
             <button className="btn btn-primary btn-outline btn-block btn-sm md:btn-md">
               view details
             </button>

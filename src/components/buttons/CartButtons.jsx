@@ -1,27 +1,42 @@
 "use client";
 
+import { handleCart } from "@/action/server/cart";
 import { useSession } from "next-auth/react";
 import { usePathname, useRouter } from "next/navigation";
+import Swal from "sweetalert2";
 
 const CartButtons = ({ product }) => {
   const router = useRouter();
   const pathname = usePathname();
-
-  // clean destructure
   const { status } = useSession();
+  // const isLogin = session?.status !== "authenticated";
 
-  const handleAddToCart = () => {
-    // still checking session
-    if (status === "loading") return;
+  // const handleAddToCart = async () => {
+  //   if (isLogin) {
+  //     const result = await handleCart({ product, inc: true });
+  //     if (result.success) {
+  //       Swal.fire("Added to Cart", product?.title, "success");
+  //     } else {
+  //       Swal.fire("Ops!", "somethis went wrong", "error");
+  //     }
+  //   } else {
+  //     return router.replace(
+  //       `/login?callbackUrl=${encodeURIComponent(pathname)}`,
+  //     );
+  //   }
+  // };
 
-    // not logged in → go login
-    if (status !== "authenticated") {
+  const handleAddToCart = async ({}) => {
+    if (status == "authenticated") {
+      const result = await handleCart({ product, inc: true });
+      if (result.success) {
+        Swal.fire("Added to Cart", product?.title, "success");
+      } else {
+        Swal.fire("Ops!", "somethis went wrong", "error");
+      }
+    } else {
       router.replace(`/login?callbackUrl=${encodeURIComponent(pathname)}`);
-      return;
     }
-
-    //  logged in → add to cart logic
-    alert(product._id);
   };
 
   return (

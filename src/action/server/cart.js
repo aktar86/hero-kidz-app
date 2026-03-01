@@ -7,6 +7,7 @@ const { dbConnect, collection } = require("@/lib/dbConnect");
 
 const cartCollection = dbConnect(collection.CART);
 
+// cart post if not added before. if added then it update
 export const handleCart = async ({ product, inc = true }) => {
   const { user } = (await getServerSession(authOptions)) || {};
   if (!user) {
@@ -46,4 +47,16 @@ export const handleCart = async ({ product, inc = true }) => {
     const result = await cartCollection.insertOne(newCart);
     return { success: result.acknowledged };
   }
+};
+
+//get all cart
+export const getCart = async () => {
+  const user = (await getServerSession(authOptions)) || {};
+  if (!user) {
+    return [];
+  }
+
+  const query = { email: user?.email };
+  const result = cartCollection.find(query).toArray();
+  return result;
 };

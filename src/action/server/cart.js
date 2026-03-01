@@ -1,7 +1,10 @@
 "use server";
 
 import { authOptions } from "@/lib/authOptions";
+import { ObjectId } from "mongodb";
 import { getServerSession } from "next-auth";
+import { revalidatePath } from "next/cache";
+import { cache } from "react";
 
 const { dbConnect, collection } = require("@/lib/dbConnect");
 
@@ -50,7 +53,8 @@ export const handleCart = async ({ product, inc = true }) => {
 };
 
 //get all cart
-export const getCart = async () => {
+//cache kore rakhbe
+export const getCart = cache(async () => {
   const user = (await getServerSession(authOptions)) || {};
   if (!user) {
     return [];
@@ -59,4 +63,24 @@ export const getCart = async () => {
   const query = { email: user?.email };
   const result = cartCollection.find(query).toArray();
   return result;
+});
+
+// delete cart
+export const deleteItemsFromCart = async (id) => {
+  const user = (await getServerSession(authOptions)) || {};
+  if (!user) {
+    return { success: false };
+  }
+  if (id?.length != 24) {
+    return { success: false };
+  }
+
+  const query = { _id: new ObjectId(id) };
+  const result = await cartCollection.deleteOne(query);
+
+  //jehetu client component use kora hocche tai comnt kore raka hoyese
+  // if (Boolean(result.deletedCount)) {
+  //   revalidatePath("/cart");
+  // }
+  return { success: Boolean(result.deletedCount) };
 };

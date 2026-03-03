@@ -1,12 +1,12 @@
 "use client";
 
-import { deleteItemsFromCart } from "@/action/server/cart";
+import { deleteItemsFromCart, increaseItemDB } from "@/action/server/cart";
 import Image from "next/image";
 import { useState } from "react";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 
-const CartItem = ({ item, removeItem }) => {
+const CartItem = ({ item, removeItem, updateQuantity }) => {
   const { title, image, price, quantity, _id } = item;
 
   const totalPrice = Number(price * quantity);
@@ -24,7 +24,6 @@ const CartItem = ({ item, removeItem }) => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const result = await deleteItemsFromCart(_id);
-
         if (result.success) {
           removeItem(_id);
           Swal.fire({
@@ -41,6 +40,26 @@ const CartItem = ({ item, removeItem }) => {
         }
       }
     });
+  };
+
+  const onIncreaseItem = async (_id, quantity) => {
+    // চেক করুন _id আসলে কী আসছে
+    console.log("প্রেরিত আইডি:", _id);
+
+    if (typeof _id !== "string") {
+      console.error("ID-টি স্ট্রিং নয়! এটি আসলে একটি:", typeof _id);
+      return;
+    }
+
+    const result = await increaseItemDB(_id, quantity);
+
+    if (result.success) {
+      Swal.fire("Success", "Quantity increased", "success");
+      updateQuantity(_id, quantity + 1);
+    } else {
+      // যদি ডাটাবেজ থেকে এরর আসে (যেমন: ১০টির বেশি আইটেম)
+      Swal.fire("Error", result.message || "Failed to update", "error");
+    }
   };
 
   return (
@@ -75,7 +94,10 @@ const CartItem = ({ item, removeItem }) => {
             {quantity}
           </span>
 
-          <button className="btn btn-sm btn-outline">
+          <button
+            onClick={() => onIncreaseItem(_id, quantity)}
+            className="btn btn-sm btn-outline"
+          >
             <FaPlus />
           </button>
         </div>

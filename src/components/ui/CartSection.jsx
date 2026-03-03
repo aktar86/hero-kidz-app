@@ -10,14 +10,20 @@ const CartSection = ({ cartItems = [] }) => {
   );
 
   const removeItem = (id) => {
+    // jei id milbena oi id takbe. r mile gele bad jabe
+    // true return korle takbe
+    //false return korle bad jabe
+    // 2 != 2 false. bad jabe
     setItems((prev) => prev.filter((item) => item._id != id));
   };
+
+  const updateQuantity = async (id, qty) => {};
 
   return (
     <div>
       <p className="font-semibold mt-3">
         <span className="text-primary ">{items.length}</span> items found in the
-        cart{" "}
+        cart
       </p>
       {/* cart */}
       <div className="flex gap-5 ">
@@ -27,9 +33,12 @@ const CartSection = ({ cartItems = [] }) => {
               key={index}
               item={{ ...item, _id: item._id.toString() }}
               removeItem={removeItem}
+              updateQuantity={updateQuantity}
             />
           ))}
         </div>
+
+        {/* right part  */}
         <div className="flex-2 border">
           <h1>Total Items:{totalItems} </h1>
         </div>

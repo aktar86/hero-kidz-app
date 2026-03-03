@@ -84,3 +84,41 @@ export const deleteItemsFromCart = async (id) => {
   // }
   return { success: Boolean(result.deletedCount) };
 };
+
+export const increaseItemDB = async (id, quantity) => {
+  // ১. প্রথমেই চেক করুন ID সঠিক আছে কি না
+  if (!id || typeof id !== "string" || id.length !== 24) {
+    console.error("Invalid ID provided:", id);
+    return {
+      success: false,
+      message: "Invalid Product ID",
+    };
+  }
+
+  const user = (await getServerSession(authOptions)) || {};
+  if (!user?.user?.email) {
+    // User check আরও সুরক্ষিত করা হলো
+    return { success: false, message: "Unauthorized" };
+  }
+
+  if (quantity >= 10) {
+    // ১০ বা তার বেশি হলে আটকাবে
+    return {
+      success: false,
+      message: "You cannot add more than 10 products at a time",
+    };
+  }
+
+  try {
+    const query = { _id: new ObjectId(id) };
+    const updateData = {
+      $inc: { quantity: 1 },
+    };
+
+    const result = await cartCollection.updateOne(query, updateData);
+    return { success: Boolean(result.modifiedCount) };
+  } catch (error) {
+    console.error("Database Update Error:", error);
+    return { success: false, message: "Database update failed" };
+  }
+};

@@ -122,3 +122,45 @@ export const increaseItemDB = async (id, quantity) => {
     return { success: false, message: "Database update failed" };
   }
 };
+
+export const decreaseItem = async (id, quantity) => {
+  //id check
+  if (!id || typeof id !== "string" || id.length !== 24) {
+    console.error("Invalid ID provided:", id);
+    return {
+      success: false,
+      message: "Invalid Product ID",
+    };
+  }
+
+  //user check
+  const user = (await getServerSession(authOptions)) || {};
+  if (!user?.user?.email) {
+    return {
+      success: false,
+      message: "Unauthorized",
+    };
+  }
+
+  //  quantity check
+  if (quantity <= 1) {
+    return {
+      success: false,
+      message: "quantity can't be empty",
+    };
+  }
+
+  try {
+    const query = { _id: new ObjectId(id) };
+    const updateData = {
+      $inc: {
+        quantity: -1,
+      },
+    };
+    const result = await cartCollection.updateOne(query, updateData);
+    return { success: Boolean(result.modifiedCount) };
+  } catch (error) {
+    console.error("Database Update Error:", error);
+    return { success: false, message: "Database update failed" };
+  }
+};

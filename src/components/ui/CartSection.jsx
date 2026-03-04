@@ -9,6 +9,11 @@ const CartSection = ({ cartItems = [] }) => {
     [items],
   );
 
+  const totalAmount = items.reduce(
+    (acc, item) => acc + item.price * item.quantity,
+    0,
+  );
+
   const removeItem = (id) => {
     // jei id milbena oi id takbe. r mile gele bad jabe
     // true return korle takbe
@@ -17,7 +22,18 @@ const CartSection = ({ cartItems = [] }) => {
     setItems((prev) => prev.filter((item) => item._id != id));
   };
 
-  const updateQuantity = async (id, qty) => {};
+  const updateQuantity = async (id, qty) => {
+    setItems((prev) =>
+      prev.map((item) => (item._id == id ? { ...item, quantity: qty } : item)),
+    );
+  };
+
+  const handleConfirmOrder = () => {
+    alert("Order Confirmed ✅");
+    // এখানে তুমি API call / checkout page redirect দিতে পারো
+  };
+
+  const deliveryFee = 80;
 
   return (
     <div>
@@ -39,8 +55,58 @@ const CartSection = ({ cartItems = [] }) => {
         </div>
 
         {/* right part  */}
-        <div className="flex-2 border">
-          <h1>Total Items:{totalItems} </h1>
+        {/* RIGHT SIDE ORDER SUMMARY */}
+        <div className="flex-1">
+          <div className="bg-white shadow-lg rounded-2xl p-6 sticky top-6 border border-gray-200">
+            <h2 className="text-2xl font-bold mb-5">Order Summary</h2>
+
+            {/* Product List */}
+            <div className="space-y-4 border-b pb-4">
+              {cartItems.map((item) => (
+                <div key={item._id} className="flex justify-between text-sm">
+                  <div>
+                    <p className="font-medium">{item.title}</p>
+                    <p className="text-gray-500">
+                      Qty: {item.quantity} × ${item.price}
+                    </p>
+                  </div>
+
+                  <span className="font-semibold">
+                    ${(item.quantity * Number(item.price)).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Totals */}
+            <div className="mt-4 space-y-2">
+              {/* delivery Fee */}
+              <div className="flex justify-between text-gray-600">
+                <span>Delivery Fee</span>
+                <span>{deliveryFee}</span>
+              </div>
+
+              {/* sub-total */}
+              <div className="flex justify-between text-gray-600">
+                <span>Subtotal</span>
+                <span>{totalAmount.toFixed(2)}</span>
+              </div>
+
+              {/* Total */}
+              <div className="flex justify-between text-xl font-bold">
+                <span>Total Price</span>
+                <span>${(totalAmount + deliveryFee).toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Confirm Button */}
+            <button
+              onClick={handleConfirmOrder}
+              className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold transition"
+            >
+              Confirm Order
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,6 +1,10 @@
 "use client";
 
-import { deleteItemsFromCart, increaseItemDB } from "@/action/server/cart";
+import {
+  decreaseItem,
+  deleteItemsFromCart,
+  increaseItemDB,
+} from "@/action/server/cart";
 import Image from "next/image";
 import { useState } from "react";
 import { FaPlus, FaMinus, FaTrash } from "react-icons/fa";
@@ -62,6 +66,16 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
     }
   };
 
+  const onDecreaseItem = async (_id, quantity) => {
+    const result = await decreaseItem(_id, quantity);
+    if (result.success) {
+      Swal.fire("Success", "Quantity decreased", "success");
+      updateQuantity(_id, quantity - 1);
+    } else {
+      Swal.fire("Error", result.message || "Failed to update", "error");
+    }
+  };
+
   return (
     <div className="card card-side bg-base-100 shadow-md p-4 items-center gap-4 border border-gray-200 ">
       {/* Image */}
@@ -84,6 +98,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
         {/* Quantity Control */}
         <div className="flex items-center gap-3">
           <button
+            onClick={() => onDecreaseItem(_id, quantity)}
             disabled={quantity <= 1}
             className={` btn btn-sm btn-outline `}
           >

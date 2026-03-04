@@ -12,10 +12,12 @@ import Swal from "sweetalert2";
 
 const CartItem = ({ item, removeItem, updateQuantity }) => {
   const { title, image, price, quantity, _id } = item;
+  const [loading, setLoading] = useState(false);
 
   const totalPrice = Number(price * quantity);
 
   const handleDeleteCart = async () => {
+    setLoading(true);
     // deleteItemsFromCart(_id)
     Swal.fire({
       title: "Are you sure?",
@@ -44,9 +46,11 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
         }
       }
     });
+    setLoading(false);
   };
 
   const onIncreaseItem = async (_id, quantity) => {
+    setLoading(true);
     // চেক করুন _id আসলে কী আসছে
     console.log("প্রেরিত আইডি:", _id);
 
@@ -64,9 +68,11 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
       // যদি ডাটাবেজ থেকে এরর আসে (যেমন: ১০টির বেশি আইটেম)
       Swal.fire("Error", result.message || "Failed to update", "error");
     }
+    setLoading(false);
   };
 
   const onDecreaseItem = async (_id, quantity) => {
+    setLoading(true);
     const result = await decreaseItem(_id, quantity);
     if (result.success) {
       Swal.fire("Success", "Quantity decreased", "success");
@@ -74,6 +80,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
     } else {
       Swal.fire("Error", result.message || "Failed to update", "error");
     }
+    setLoading(false);
   };
 
   return (
@@ -99,7 +106,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
         <div className="flex items-center gap-3">
           <button
             onClick={() => onDecreaseItem(_id, quantity)}
-            disabled={quantity <= 1}
+            disabled={quantity <= 1 || loading == true}
             className={` btn btn-sm btn-outline `}
           >
             <FaMinus />
@@ -111,6 +118,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
 
           <button
             onClick={() => onIncreaseItem(_id, quantity)}
+            disabled={loading == true}
             className="btn btn-sm btn-outline"
           >
             <FaPlus />
@@ -124,6 +132,7 @@ const CartItem = ({ item, removeItem, updateQuantity }) => {
 
         <button
           onClick={handleDeleteCart}
+          disabled={loading == true}
           className="btn btn-error btn-sm text-white"
         >
           <FaTrash />

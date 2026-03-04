@@ -1,17 +1,21 @@
 "use client";
 import React, { useMemo, useState } from "react";
-import CartItem from "../cards/CartItem";
+
+import { useRouter } from "next/navigation";
+import CartItem from "./CartItem";
 
 const CartSection = ({ cartItems = [] }) => {
+  const router = useRouter();
   const [items, setItems] = useState(cartItems);
+
   const totalItems = useMemo(
     () => items.reduce((acc, item) => acc + item.quantity, 0),
     [items],
   );
 
-  const totalAmount = items.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
+  const totalAmount = useMemo(
+    () => items.reduce((acc, item) => acc + item.price * item.quantity, 0),
+    [items],
   );
 
   const removeItem = (id) => {
@@ -30,10 +34,16 @@ const CartSection = ({ cartItems = [] }) => {
 
   const handleConfirmOrder = () => {
     alert("Order Confirmed ✅");
-    // এখানে তুমি API call / checkout page redirect দিতে পারো
   };
 
   const deliveryFee = 80;
+
+  const onConfirm = () => {
+    if (items.length > 0) {
+      handleConfirmOrder();
+      router.push("/checkout");
+    }
+  };
 
   return (
     <div>
@@ -43,7 +53,7 @@ const CartSection = ({ cartItems = [] }) => {
       </p>
       {/* cart */}
       <div className="flex gap-5 ">
-        <div className="flex-3 space-y-2">
+        <div className="flex-4 space-y-2">
           {items.map((item, index) => (
             <CartItem
               key={index}
@@ -56,13 +66,13 @@ const CartSection = ({ cartItems = [] }) => {
 
         {/* right part  */}
         {/* RIGHT SIDE ORDER SUMMARY */}
-        <div className="flex-1">
+        <div className="flex-2">
           <div className="bg-white shadow-lg rounded-2xl p-6 sticky top-6 border border-gray-200">
             <h2 className="text-2xl font-bold mb-5">Order Summary</h2>
 
             {/* Product List */}
             <div className="space-y-4 border-b pb-4">
-              {cartItems.map((item) => (
+              {items.map((item) => (
                 <div key={item._id} className="flex justify-between text-sm">
                   <div>
                     <p className="font-medium">{item.title}</p>
@@ -80,6 +90,11 @@ const CartSection = ({ cartItems = [] }) => {
 
             {/* Totals */}
             <div className="mt-4 space-y-2">
+              {/* Total Item */}
+              <div className="flex justify-between text-gray-600">
+                <span>Total Item</span>
+                <span>{totalItems}</span>
+              </div>
               {/* delivery Fee */}
               <div className="flex justify-between text-gray-600">
                 <span>Delivery Fee</span>
@@ -101,8 +116,9 @@ const CartSection = ({ cartItems = [] }) => {
 
             {/* Confirm Button */}
             <button
-              onClick={handleConfirmOrder}
-              className="w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold transition"
+              onClick={onConfirm}
+              disabled={!items.length}
+              className={`${!items.length && "cursor-not-allowed"} w-full mt-6 bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-xl font-semibold transition disabled:bg-gray-400 `}
             >
               Confirm Order
             </button>

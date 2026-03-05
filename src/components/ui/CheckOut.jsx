@@ -2,8 +2,14 @@
 import { useForm } from "react-hook-form";
 import CartItem from "./CartItem";
 import { useMemo, useState } from "react";
+import { createOrder } from "@/action/server/order";
+import Swal from "sweetalert2";
+import { useSession } from "next-auth/react";
 
 const CheckOut = ({ cartItems = [] }) => {
+  const user = useSession();
+  console.log(user);
+  console.log("user", user?.data?.user?.name);
   const [items, setItems] = useState(cartItems);
   const {
     register,
@@ -11,11 +17,6 @@ const CheckOut = ({ cartItems = [] }) => {
     reset,
     formState: { errors },
   } = useForm();
-
-  const handleFormData = (data) => {
-    console.log(data);
-    reset();
-  };
 
   const totalItems = useMemo(
     () => items.reduce((acc, item) => acc + item.quantity, 0),
@@ -26,6 +27,18 @@ const CheckOut = ({ cartItems = [] }) => {
     [items],
   );
   const deliveryFee = 80;
+
+  //form data
+  const handleFormData = async (data) => {
+    console.log(data);
+    const result = await createOrder(data);
+    if (result.success) {
+      reset();
+      Swal.fire("success", "Order Successfully created", "success");
+    } else {
+      Swal.fire("error", "something went wrong", "error");
+    }
+  };
 
   return (
     <div>
@@ -49,13 +62,12 @@ const CheckOut = ({ cartItems = [] }) => {
               <legend>Name</legend>
               <input
                 type="text"
-                placeholder="name"
-                {...register("name", { required: true })}
-                className="border border-gray-300 rounded  p-2 w-full "
+                value={user?.data?.user?.name || ""}
+                disabled
+                {...register("name")}
+                readOnly
+                className="border border-gray-300 rounded  p-2 w-full cursor-not-allowed  "
               />
-              {errors.name?.type === "required" && (
-                <p className="text-red-500">Name is required</p>
-              )}
             </fieldset>
 
             {/* Email */}
@@ -63,13 +75,11 @@ const CheckOut = ({ cartItems = [] }) => {
               <legend>Email</legend>
               <input
                 type="email"
-                placeholder="Email"
-                {...register("email", { required: true })}
-                className="border border-gray-300 rounded  p-2 w-full "
+                value={user?.data?.user?.email || ""}
+                disabled
+                {...register("email")}
+                className="border border-gray-300 rounded  p-2 w-full cursor-not-allowed "
               />
-              {errors.email?.type === "required" && (
-                <p className="text-red-500">Email is required</p>
-              )}
             </fieldset>
 
             {/* Address */}

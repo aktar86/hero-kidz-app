@@ -9,7 +9,7 @@ const Logo = () => {
         alt="logo-hero-kidz"
         src={"/assets/logo.png"}
         width={50}
-        height={40}
+        height={50}
       ></Image>
       <h2 className="text-2xl font-bold">
         Hero<span className="text-primary">Kidz.</span>

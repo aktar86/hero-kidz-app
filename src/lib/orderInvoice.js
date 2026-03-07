@@ -1,52 +1,45 @@
-export const orderInvoiceTemplate = (order) => {
-  const items = order.item
-    .map(
-      (p) => `
-      <tr>
-        <td style="padding:8px;border:1px solid #ddd;">${p.title}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:center;">${p.quantity}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:right;">৳${p.price}</td>
-        <td style="padding:8px;border:1px solid #ddd;text-align:right;">৳${(
-          p.price * p.quantity
-        ).toFixed(2)}</td>
-      </tr>
-    `,
-    )
+export const orderInvoiceTemplate = ({ orderId, items, totalPrice }) => {
+  const productRows = items
+    .map((item) => {
+      return `
+        <tr>
+          <td>${item.title}</td>
+          <td align="center">${item.quantity}</td>
+          <td align="center">৳${item.price}</td>
+          <td align="center">৳${(item.price * item.quantity).toFixed(2)}</td>
+        </tr>
+      `;
+    })
     .join("");
 
-  const total = order.item.reduce((sum, p) => sum + p.price * p.quantity, 0);
-
   return `
-  <div style="font-family:Arial,sans-serif;max-width:700px;margin:auto;">
-    
-    <h2 style="color:#333;">Hero Kidz - Order Invoice</h2>
-    <p>Thank you for your order!</p>
+    <div style="font-family: Arial; padding:20px;">
+      <h2>🧾 Order Invoice</h2>
 
-    <p><b>Order Date:</b> ${order.createdAt}</p>
+      <p>Order ID: <strong>${orderId}</strong></p>
 
-    <table style="width:100%;border-collapse:collapse;margin-top:20px;">
-      <thead>
-        <tr style="background:#f5f5f5;">
-          <th style="padding:10px;border:1px solid #ddd;">Product</th>
-          <th style="padding:10px;border:1px solid #ddd;">Qty</th>
-          <th style="padding:10px;border:1px solid #ddd;">Price</th>
-          <th style="padding:10px;border:1px solid #ddd;">Total</th>
-        </tr>
-      </thead>
+      <table width="100%" border="1" cellspacing="0" cellpadding="8" style="border-collapse:collapse;">
+        <thead>
+          <tr>
+            <th align="left">Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Total</th>
+          </tr>
+        </thead>
 
-      <tbody>
-        ${items}
-      </tbody>
-    </table>
+        <tbody>
+          ${productRows}
+        </tbody>
+      </table>
 
-    <h3 style="text-align:right;margin-top:20px;">
-      Grand Total: ৳${total.toFixed(2)}
-    </h3>
+      <h3 style="text-align:right;margin-top:20px;">
+        Grand Total: ৳${totalPrice}
+      </h3>
 
-    <p style="margin-top:30px;color:#666;">
-      If you have any questions, reply to this email.
-    </p>
-
-  </div>
+      <p style="margin-top:30px;color:#777;">
+        Thank you for your order ❤️
+      </p>
+    </div>
   `;
 };

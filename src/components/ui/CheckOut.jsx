@@ -5,9 +5,11 @@ import { useMemo, useState } from "react";
 import { createOrder } from "@/action/server/order";
 import Swal from "sweetalert2";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 const CheckOut = ({ cartItems = [] }) => {
   const user = useSession();
+  const router = useRouter();
   console.log(user);
   console.log("user", user?.data?.user?.name);
   const [items, setItems] = useState(cartItems);
@@ -34,6 +36,7 @@ const CheckOut = ({ cartItems = [] }) => {
     const result = await createOrder(data);
     if (result.success) {
       reset();
+      router.push("/");
       Swal.fire("success", "Order Successfully created", "success");
     } else {
       Swal.fire("error", "something went wrong", "error");

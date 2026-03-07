@@ -164,3 +164,14 @@ export const decreaseItem = async (id, quantity) => {
     return { success: false, message: "Database update failed" };
   }
 };
+
+export const clearCart = async () => {
+  const user = (await getServerSession(authOptions)) || {};
+  if (!user) {
+    return { success: false };
+  }
+  const query = { email: user?.email };
+  const result = await cartCollection.deleteMany(query);
+
+  return result;
+};

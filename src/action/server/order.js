@@ -10,24 +10,29 @@ const { dbConnect, collection } = require("@/lib/dbConnect");
 
 const ordersCollection = dbConnect(collection.ORDER);
 
-export const createOrder = async (payload) => {
-  const user = (await getServerSession(authOptions)) || {};
+export const createOrder = async (payload, deliveryFee) => {
+  const { user } = (await getServerSession(authOptions)) || {};
   if (!user) {
     return { success: false };
   }
 
   const cart = await getCart();
-
   console.log(cart);
 
   if (cart.length === 0) {
     return false;
   }
 
+  const totalAmount = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
   const newOrder = {
     createdAt: new Date().toISOString(),
     item: cart,
     ...payload,
+    totalPrice: totalAmount + deliveryFee,
   };
 
   const result = await ordersCollection.insertOne(newOrder);
@@ -36,11 +41,6 @@ export const createOrder = async (payload) => {
     await clearCart();
   }
 
-  const totalAmount = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
-
   // send invoice
   await sendEmail({
     to: user?.email,
@@ -48,7 +48,7 @@ export const createOrder = async (payload) => {
     html: orderInvoiceTemplate({
       orderId: result.insertedId,
       items: cart,
-      totalPrice: totalAmount,
+      totalPrice: totalAmount + deliveryFee,
     }),
   });
   return { success: Boolean(result.insertedId) };

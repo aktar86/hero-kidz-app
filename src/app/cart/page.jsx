@@ -11,6 +11,7 @@ const CartPage = async () => {
     _id: item._id.toString(),
   }));
 
+  console.log("cart page", formattedItems);
   return (
     <div>
       {/* title */}

@@ -6,14 +6,16 @@ import { usePathname, useRouter } from "next/navigation";
 import { useState } from "react";
 import Swal from "sweetalert2";
 
-const CartButtons = ({ product }) => {
+const CartButtons = (product) => {
   const router = useRouter();
   const pathname = usePathname();
   const { status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log(product);
   const handleAddToCart = async () => {
     setIsLoading(true);
+
     if (status == "authenticated") {
       const result = await handleCart({ product, inc: true });
       if (result.success) {

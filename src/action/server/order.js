@@ -17,17 +17,22 @@ export const createOrder = async (payload) => {
   }
 
   const cart = await getCart();
-
   console.log(cart);
 
   if (cart.length === 0) {
     return false;
   }
 
+  const totalAmount = cart.reduce(
+    (sum, item) => sum + item.price * item.quantity,
+    0,
+  );
+
   const newOrder = {
     createdAt: new Date().toISOString(),
     item: cart,
     ...payload,
+    totalPrice: totalAmount,
   };
 
   const result = await ordersCollection.insertOne(newOrder);
@@ -35,11 +40,6 @@ export const createOrder = async (payload) => {
   if (Boolean(result.insertedId)) {
     await clearCart();
   }
-
-  const totalAmount = cart.reduce(
-    (sum, item) => sum + item.price * item.quantity,
-    0,
-  );
 
   // send invoice
   await sendEmail({

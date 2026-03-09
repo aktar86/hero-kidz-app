@@ -12,6 +12,7 @@ import Swal from "sweetalert2";
 
 const CartItem = ({ item, removeItem, updateQuantity }) => {
   const { title, image, price, quantity, _id } = item;
+  console.log(item);
   const [loading, setLoading] = useState(false);
 
   const totalPrice = Number(price * quantity);

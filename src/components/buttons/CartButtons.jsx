@@ -17,7 +17,7 @@ const CartButtons = (product) => {
     setIsLoading(true);
 
     if (status == "authenticated") {
-      const result = await handleCart({ product, inc: true });
+      const result = await handleCart(product._id);
       if (result.success) {
         Swal.fire("Added to Cart", product?.title, "success");
       } else {

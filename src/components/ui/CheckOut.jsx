@@ -33,7 +33,7 @@ const CheckOut = ({ cartItems = [] }) => {
   //form data
   const handleFormData = async (data) => {
     console.log(data);
-    const result = await createOrder(data);
+    const result = await createOrder(data, deliveryFee);
     if (result.success) {
       reset();
       router.push("/");

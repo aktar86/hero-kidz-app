@@ -11,21 +11,20 @@ const { dbConnect, collection } = require("@/lib/dbConnect");
 const cartCollection = dbConnect(collection.CART);
 
 // cart post if not added before. if added then it update
-export const handleCart = async ({ product, inc = true }) => {
+export const handleCart = async (productId) => {
   const { user } = (await getServerSession(authOptions)) || {};
+
   if (!user) {
     return { success: false };
   }
 
-  //getcartitem=> user.email && productId
-  const query = { email: user?.email, productId: product?._id };
+  const query = { email: user?.email, productId };
   const isAdded = await cartCollection.findOne(query);
 
   if (isAdded) {
-    //if exixt = update
     const updateData = {
       $inc: {
-        quantity: inc ? 1 : -1,
+        quantity: 1,
       },
     };
 
@@ -33,10 +32,14 @@ export const handleCart = async ({ product, inc = true }) => {
 
     return { success: Boolean(result.modifiedCount) };
   } else {
-    //not exixt = insert
+    const productCollection = dbConnect(collection.PRODUCTS);
+
+    const product = await productCollection.findOne({
+      _id: new ObjectId(productId),
+    });
 
     const newCart = {
-      productId: product?._id,
+      productId: product?._id.toString(),
       email: user?.email,
       title: product?.title,
       quantity: 1,
@@ -48,6 +51,7 @@ export const handleCart = async ({ product, inc = true }) => {
     };
 
     const result = await cartCollection.insertOne(newCart);
+
     return { success: result.acknowledged };
   }
 };

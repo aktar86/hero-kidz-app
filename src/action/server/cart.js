@@ -19,6 +19,7 @@ export const handleCart = async (productId) => {
   }
 
   const query = { email: user?.email, productId };
+
   const isAdded = await cartCollection.findOne(query);
 
   if (isAdded) {
@@ -37,6 +38,11 @@ export const handleCart = async (productId) => {
     const product = await productCollection.findOne({
       _id: new ObjectId(productId),
     });
+
+    if (!product) {
+      console.log("Product not found:", productId);
+      return { success: false };
+    }
 
     const newCart = {
       productId: product?._id.toString(),
@@ -79,7 +85,7 @@ export const deleteItemsFromCart = async (id) => {
     return { success: false };
   }
 
-  const query = { _id: new ObjectId(id) };
+  const query = { _id: new ObjectId(id), email: user?.email };
   const result = await cartCollection.deleteOne(query);
 
   //jehetu client component use kora hocche tai comnt kore raka hoyese
@@ -114,7 +120,7 @@ export const increaseItemDB = async (id, quantity) => {
   }
 
   try {
-    const query = { _id: new ObjectId(id) };
+    const query = { _id: new ObjectId(id), email: user?.email };
     const updateData = {
       $inc: { quantity: 1 },
     };
@@ -155,7 +161,7 @@ export const decreaseItem = async (id, quantity) => {
   }
 
   try {
-    const query = { _id: new ObjectId(id) };
+    const query = { _id: new ObjectId(id), email: user?.email };
     const updateData = {
       $inc: {
         quantity: -1,
@@ -170,7 +176,7 @@ export const decreaseItem = async (id, quantity) => {
 };
 
 export const clearCart = async () => {
-  const user = (await getServerSession(authOptions)) || {};
+  const { user } = (await getServerSession(authOptions)) || {};
   if (!user) {
     return { success: false };
   }

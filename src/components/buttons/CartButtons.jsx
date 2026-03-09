@@ -12,12 +12,11 @@ const CartButtons = (product) => {
   const { status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(product);
   const handleAddToCart = async () => {
     setIsLoading(true);
 
     if (status == "authenticated") {
-      const result = await handleCart(product._id);
+      const result = await handleCart(product.product._id);
       if (result.success) {
         Swal.fire("Added to Cart", product?.title, "success");
       } else {
